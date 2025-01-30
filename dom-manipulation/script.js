@@ -8,6 +8,7 @@ let quotes = [
 
 // Initialize the app on page load
 document.addEventListener("DOMContentLoaded", function() {
+    loadQuotes(); // Load quotes from localStorage if available
     populateCategories();  // Populate the category dropdown on page load
     document.getElementById("addQuoteButton").addEventListener("click", addQuoteFromInput);
     document.getElementById("newQuote").addEventListener("click", showRandomQuote);
