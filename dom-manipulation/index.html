@@ -6,26 +6,18 @@
     <title>Dynamic Quote Generator</title>
 </head>
 <body>
-
     <div id="quoteDisplay"></div>
 
-    <label for="quotes-category">Category:</label>
-    <select id="quotes-category">
-        <option value="All">All</option>
-        <option value="Motivational">Motivational</option>
-        <option value="Inspirational">Inspirational</option>
+    <label for="categoryFilter">Category:</label>
+    <select id="categoryFilter" onchange="filterQuotes()">
+        <option value="all">All Categories</option>
+        <!-- Categories will be dynamically populated here -->
     </select>
 
     <input type="text" id="newQuoteText" placeholder="Enter a new quote" />
     <input type="text" id="newQuoteCategory" placeholder="Enter category" />
     <button id="addQuoteButton">Add Quote</button>
     <button id="newQuote">Show New Quote</button>
-
-    <!-- Export Quotes button -->
-    <button id="exportButton">Export Quotes</button>
-
-    <!-- Import Quotes file input -->
-    <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
 
     <script src="script.js"></script>
 </body>
