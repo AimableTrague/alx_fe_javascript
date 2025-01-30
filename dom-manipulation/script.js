@@ -96,12 +96,44 @@ document.addEventListener('DOMContentLoaded', function() {
         alert('Quote added successfully!');
     }
 
+    // Create Add Quote Form
+    function createAddQuoteForm() {
+        const form = document.createElement('form');
+        const quoteInput = document.createElement('input');
+        quoteInput.type = 'text';
+        quoteInput.id = 'newQuoteText';
+        quoteInput.placeholder = 'Enter quote';
+        const categoryInput = document.createElement('input');
+        categoryInput.type = 'text';
+        categoryInput.id = 'newQuoteCategory';
+        categoryInput.placeholder = 'Enter category';
+        const submitButton = document.createElement('button');
+        submitButton.textContent = 'Add Quote';
+        form.appendChild(quoteInput);
+        form.appendChild(categoryInput);
+        form.appendChild(submitButton);
+        document.body.appendChild(form);
+
+        submitButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            addQuote();
+        });
+    }
+
+    createAddQuoteForm();
+
+    // Add event listener to show random quote button
+    if (randomQuote) {
+        randomQuote.addEventListener("click", showRandomQuote);
+    } else {
+        console.error('Random quote button not found');
+    }
+
+    // Add event listener to the “Show New Quote” button
     const addit = document.querySelector('button');
     if (addit) {
         addit.addEventListener('click', addQuote);
     } else {
         console.error('Add Quote button not found');
     }
-
-    randomQuote.addEventListener("click", showRandomQuote);
 });
