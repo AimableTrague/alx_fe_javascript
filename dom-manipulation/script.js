@@ -1,4 +1,4 @@
-// Sample quotes array (initial data can be loaded from localStorage if available)
+// Sample quotes array (this will be loaded from localStorage if available)
 let quotes = [
     { text: "The only way to do great work is to love what you do.", category: "Motivation" },
     { text: "Life is what happens when you're busy making other plans.", category: "Life" },
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.getElementById("importFile").addEventListener("change", importFromJsonFile);
 });
 
-// Populate categories dynamically from the quotes array
+// Function to populate categories dynamically from the quotes array
 function populateCategories() {
     const categoryFilter = document.getElementById("categoryFilter");
     const uniqueCategories = new Set();
@@ -35,7 +35,7 @@ function populateCategories() {
         categoryFilter.appendChild(option);
     });
 
-    // Restore last selected category from local storage
+    // Restore the last selected category from localStorage
     const lastCategory = localStorage.getItem('selectedCategory') || 'all';
     categoryFilter.value = lastCategory;
 
@@ -43,7 +43,7 @@ function populateCategories() {
     filterQuotes();
 }
 
-// Function to filter quotes based on selected category
+// Function to filter quotes based on the selected category
 function filterQuotes() {
     const selectedCategory = document.getElementById("categoryFilter").value;
     const filteredQuotes = selectedCategory === 'all'
@@ -53,7 +53,7 @@ function filterQuotes() {
     // Display filtered quotes (assuming displayQuotes is a function that updates the DOM)
     displayQuotes(filteredQuotes);
 
-    // Save the selected category to local storage
+    // Save the selected category to localStorage
     localStorage.setItem('selectedCategory', selectedCategory);
 }
 
