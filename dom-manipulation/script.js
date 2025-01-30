@@ -142,12 +142,23 @@ async function syncQuotes() {
 
     if (conflictsResolved) {
         // Notify user about the conflict resolution
-        alert("Data conflict resolved: Quotes updated from server.");
+        showNotification("Quotes synced with server! Conflicts resolved.");
     }
 
     // Sync local storage and refresh the quotes display
     saveQuotes();
     populateCategories();
+}
+
+function showNotification(message) {
+    const notification = document.getElementById("syncNotification");
+    notification.textContent = message;
+    notification.style.display = "block";
+
+    // Hide the notification after 5 seconds
+    setTimeout(() => {
+        notification.style.display = "none";
+    }, 5000);
 }
 
 function exportToJsonFile() {
