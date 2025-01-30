@@ -10,7 +10,7 @@ const API_URL = "https://jsonplaceholder.typicode.com/posts"; // Mock API for si
 document.addEventListener("DOMContentLoaded", function() {
     loadQuotes();
     populateCategories();
-    setInterval(syncQuotesWithServer, 5000); // Sync every 5 seconds
+    setInterval(syncQuotes, 5000); // Sync every 5 seconds
     document.getElementById("addQuoteButton").addEventListener("click", addQuoteFromInput);
     document.getElementById("newQuote").addEventListener("click", showRandomQuote);
 });
@@ -92,24 +92,40 @@ function loadQuotes() {
     }
 }
 
-function syncQuotesWithServer() {
-    fetch(API_URL)
+function fetchQuotesFromServer() {
+    // Simulate fetching quotes from the mock server
+    return fetch(API_URL)
         .then(response => response.json())
         .then(data => {
-            const serverQuotes = data.slice(0, quotes.length); // Simulate the server data
-
-            // Handle conflicts - server data takes precedence
-            serverQuotes.forEach((serverQuote, index) => {
-                if (JSON.stringify(quotes[index]) !== JSON.stringify(serverQuote)) {
-                    quotes[index] = serverQuote; // Override with server data
-                    alert(`Conflict resolved: Quote ${index + 1} updated from server.`);
-                }
-            });
-
-            saveQuotes();
-            populateCategories();
+            // Simulate server-side quotes (taking the first few posts as "quotes")
+            return data.slice(0, quotes.length).map(post => ({
+                text: post.title, 
+                category: post.body.split(" ")[0] // Simplified category based on post content
+            }));
         })
-        .catch(error => console.error("Failed to sync with server:", error));
+        .catch(error => {
+            console.error("Failed to fetch quotes from the server:", error);
+            return [];
+        });
+}
+
+function syncQuotes() {
+    // Fetch the latest quotes from the server
+    fetchQuotesFromServer().then(serverQuotes => {
+        if (serverQuotes.length === 0) return;
+
+        // Handle conflicts: If server data differs, replace with server data
+        serverQuotes.forEach((serverQuote, index) => {
+            if (JSON.stringify(quotes[index]) !== JSON.stringify(serverQuote)) {
+                quotes[index] = serverQuote; // Override with server data
+                alert(`Conflict resolved: Quote ${index + 1} updated from server.`);
+            }
+        });
+
+        // Update local storage and DOM with the synchronized data
+        saveQuotes();
+        populateCategories();
+    });
 }
 
 function exportToJsonFile() {
