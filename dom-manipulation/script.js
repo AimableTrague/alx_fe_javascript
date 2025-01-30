@@ -92,40 +92,62 @@ function loadQuotes() {
     }
 }
 
-function fetchQuotesFromServer() {
-    // Simulate fetching quotes from the mock server
-    return fetch(API_URL)
-        .then(response => response.json())
-        .then(data => {
-            // Simulate server-side quotes (taking the first few posts as "quotes")
-            return data.slice(0, quotes.length).map(post => ({
-                text: post.title, 
-                category: post.body.split(" ")[0] // Simplified category based on post content
-            }));
-        })
-        .catch(error => {
-            console.error("Failed to fetch quotes from the server:", error);
-            return [];
-        });
+async function fetchQuotesFromServer() {
+    try {
+        const response = await fetch(API_URL);
+        const data = await response.json();
+
+        // Simulate server-side quotes (taking the first few posts as "quotes")
+        return data.slice(0, quotes.length).map(post => ({
+            text: post.title,
+            category: post.body.split(" ")[0] // Simplified category based on post content
+        }));
+    } catch (error) {
+        console.error("Failed to fetch quotes from the server:", error);
+        return [];
+    }
 }
 
-function syncQuotes() {
-    // Fetch the latest quotes from the server
-    fetchQuotesFromServer().then(serverQuotes => {
-        if (serverQuotes.length === 0) return;
-
-        // Handle conflicts: If server data differs, replace with server data
-        serverQuotes.forEach((serverQuote, index) => {
-            if (JSON.stringify(quotes[index]) !== JSON.stringify(serverQuote)) {
-                quotes[index] = serverQuote; // Override with server data
-                alert(`Conflict resolved: Quote ${index + 1} updated from server.`);
-            }
+async function postQuoteToServer(quote) {
+    try {
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(quote)
         });
 
-        // Update local storage and DOM with the synchronized data
-        saveQuotes();
-        populateCategories();
+        const data = await response.json();
+        console.log("Quote posted successfully:", data);
+        return data;
+    } catch (error) {
+        console.error("Failed to post quote to the server:", error);
+    }
+}
+
+async function syncQuotes() {
+    // Fetch the latest quotes from the server
+    const serverQuotes = await fetchQuotesFromServer();
+
+    if (serverQuotes.length === 0) return;
+
+    let conflictsResolved = false;
+
+    // Handle conflicts: If server data differs, replace with server data
+    serverQuotes.forEach((serverQuote, index) => {
+        if (JSON.stringify(quotes[index]) !== JSON.stringify(serverQuote)) {
+            quotes[index] = serverQuote; // Override with server data
+            conflictsResolved = true;
+        }
     });
+
+    if (conflictsResolved) {
+        // Notify user about the conflict resolution
+        alert("Data conflict resolved: Quotes updated from server.");
+    }
+
+    // Sync local storage and refresh the quotes display
+    saveQuotes();
+    populateCategories();
 }
 
 function exportToJsonFile() {
