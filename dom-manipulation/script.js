@@ -5,13 +5,14 @@ let quotes = [
     { text: "The best way to predict the future is to create it.", category: "Inspiration" }
 ];
 
+const API_URL = "https://jsonplaceholder.typicode.com/posts"; // Mock API for simulation
+
 document.addEventListener("DOMContentLoaded", function() {
     loadQuotes();
     populateCategories();
+    setInterval(syncQuotesWithServer, 5000); // Sync every 5 seconds
     document.getElementById("addQuoteButton").addEventListener("click", addQuoteFromInput);
     document.getElementById("newQuote").addEventListener("click", showRandomQuote);
-    document.getElementById("exportQuotesButton").addEventListener("click", exportToJsonFile);
-    document.getElementById("importFile").addEventListener("change", importFromJsonFile);
 });
 
 function populateCategories() {
@@ -31,9 +32,6 @@ function populateCategories() {
         categoryFilter.appendChild(option);
     });
 
-    const lastCategory = localStorage.getItem('selectedCategory') || 'all';
-    categoryFilter.value = lastCategory;
-
     filterQuotes();
 }
 
@@ -44,7 +42,6 @@ function filterQuotes() {
         : quotes.filter(quote => quote.category === selectedCategory);
 
     displayQuotes(filteredQuotes);
-    localStorage.setItem('selectedCategory', selectedCategory);
 }
 
 function displayQuotes(quotesToDisplay) {
@@ -93,6 +90,26 @@ function loadQuotes() {
     if (savedQuotes) {
         quotes = JSON.parse(savedQuotes);
     }
+}
+
+function syncQuotesWithServer() {
+    fetch(API_URL)
+        .then(response => response.json())
+        .then(data => {
+            const serverQuotes = data.slice(0, quotes.length); // Simulate the server data
+
+            // Handle conflicts - server data takes precedence
+            serverQuotes.forEach((serverQuote, index) => {
+                if (JSON.stringify(quotes[index]) !== JSON.stringify(serverQuote)) {
+                    quotes[index] = serverQuote; // Override with server data
+                    alert(`Conflict resolved: Quote ${index + 1} updated from server.`);
+                }
+            });
+
+            saveQuotes();
+            populateCategories();
+        })
+        .catch(error => console.error("Failed to sync with server:", error));
 }
 
 function exportToJsonFile() {
