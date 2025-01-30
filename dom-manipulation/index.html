@@ -1,34 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dynamic Quote Generator</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Quote Generator</title>
 </head>
 <body>
-    <h1>Dynamic Quote Generator</h1>
-    <div>
-        <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
-        <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
-        <button onclick="addQuote()">Add Quote</button>
-    </div>
 
-    <div id="quoteDisplay">
-    </div>
-    <select name="quotes" id="quotes-category">
-        <option value="All" hidden selected>All</option>
-        <option value="Motivation">Motivation</option>
-        <option value="Inspiration">Inspiration</option>
-        <option value="Success">Success</option>
-        <option value="Perseverance">Perseverance</option>
-        <option value="Happiness">Happiness</option>
-        <option value="Wisdom">Wisdom</option>
-        <option value="Confidence">Confidence</option>
-        <option value="Education">Education</option>
-        <option value="Health">Health</option>
-        <option value="Innovation">Innovation</option>
+    <div id="quoteDisplay"></div>
+
+    <label for="quotes-category">Category:</label>
+    <select id="quotes-category">
+        <option value="All">All</option>
+        <option value="Motivational">Motivational</option>
+        <option value="Inspirational">Inspirational</option>
     </select>
+
+    <input type="text" id="newQuoteText" placeholder="Enter a new quote" />
+    <input type="text" id="newQuoteCategory" placeholder="Enter category" />
+    <button id="addQuoteButton">Add Quote</button>
     <button id="newQuote">Show New Quote</button>
+
+    <!-- Export Quotes button -->
+    <button id="exportButton">Export Quotes</button>
+
+    <!-- Import Quotes file input -->
+    <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
 
     <script src="script.js"></script>
 </body>
